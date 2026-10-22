@@ -24,7 +24,7 @@ class PackageTests(unittest.TestCase):
         with tempfile.TemporaryDirectory() as directory:
             subprocess.run(["make", "-s", f"DESTDIR={directory}", "install-dkms",
                             "install-mkinitcpio", "install-initramfs-tools",
-                            "install-dracut"],
+                            "install-dracut", "install-dracut-config"],
                            cwd=ROOT, check=True)
             root = Path(directory)
             paths = {path.relative_to(root).as_posix() for path in root.rglob("*")
@@ -34,6 +34,7 @@ class PackageTests(unittest.TestCase):
                              "etc/mkinitcpio.conf.d/zz-gpu-unlock.conf",
                              "usr/share/initramfs-tools/modules.d/gpu-unlock.conf",
                              "usr/lib/dracut/dracut.conf.d/gpu-unlock.conf",
+                            "etc/dracut.conf.d/gpu-unlock.conf",
                              "usr/share/doc/gpu-unlock/README.md"):
                 self.assertIn(expected, paths)
             self.assertFalse(any(path.endswith(".mod.c") for path in paths))

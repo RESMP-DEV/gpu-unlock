@@ -27,6 +27,7 @@ DEBS    := $(foreach p,dkms firmware,$(DEBDIR)/gpu-unlock-$(p)_$(VERSION)_all.de
 
 .PHONY: all test dist inputs firmware assets install-dkms install-firmware \
         install-mkinitcpio install-initramfs-tools install-dracut \
+	install-dracut-config \
         install-licenses arch deb rpm install-arch install-deb install-rpm
 
 all:
@@ -85,6 +86,12 @@ install-initramfs-tools:
 
 install-dracut:
 	install -Dm644 packaging/boot/dracut.conf $(DESTDIR)/usr/lib/dracut/dracut.conf.d/gpu-unlock.conf
+
+# Debian-family systems may use dracut while retaining update-initramfs as
+# the operator command. Keep its configuration in /etc, where that front end
+# and distro documentation expect local drop-ins.
+install-dracut-config:
+	install -Dm644 packaging/boot/dracut.conf $(DESTDIR)/etc/dracut.conf.d/gpu-unlock.conf
 
 install-licenses:
 	install -Dm644 -t $(DESTDIR)$(LICENSEDIR)/$(PKG) $(LICENSES)

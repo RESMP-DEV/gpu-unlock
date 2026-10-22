@@ -1,0 +1,14 @@
+#!/bin/sh
+set -e
+
+# Let the generated dkms helper build and install the module first. On
+# Ubuntu 26.04 update-initramfs is provided by dracut, not initramfs-tools.
+#DEBHELPER#
+
+if [ "$1" = configure ] && command -v update-initramfs >/dev/null 2>&1; then
+	update-initramfs -u
+elif [ "$1" = configure ] && command -v dracut >/dev/null 2>&1; then
+	dracut --force --kver "$(uname -r)"
+fi
+
+exit 0
